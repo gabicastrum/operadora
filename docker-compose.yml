@@ -1,0 +1,51 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  # Serviço do Banco de Dados PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: servico-gestao-db
+    restart: always
+    # As credenciais são lidas do nosso arquivo .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      # Expõe a porta do banco para a nossa máquina local
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      # Garante que os dados do banco persistam
+      - postgres-data:/var/lib/postgresql/data
+
+  # Serviço do Backend (Nossa aplicação NestJS)
+  backend:
+    # Em vez de construir uma imagem customizada, vamos usar o bind mount
+    # para desenvolvimento, o que é mais rápido.
+    build: . # Constrói a imagem a partir do Dockerfile na raiz
+    container_name: servico-gestao-app
+    restart: always
+    # O backend depende que o banco de dados esteja pronto primeiro
+    depends_on:
+      - postgres
+    ports:
+      # Expõe a porta da nossa API
+      - "3000:3000"
+    volumes:
+      # Mapeia nosso código local para dentro do container,
+      # permitindo hot-reload.
+      - .:/usr/src/app
+      # Volume anônimo para node_modules, evitando conflitos.
+      - /usr/src/app/node_modules
+    # Aqui passamos a URL do banco de dados para a aplicação.
+    # Note que o HOST agora é 'postgres', o nome do serviço do banco.
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public"
+      NODE_ENV: development
+      PORT: 3000
+
+# Volumes nomeados para persistência de dados
+volumes:
+  postgres-data:
