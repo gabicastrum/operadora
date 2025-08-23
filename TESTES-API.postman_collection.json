@@ -1,0 +1,182 @@
+{
+    "info": {
+        "_postman_id": "fase1-gestao-operadora",
+        "name": "FASE 1 - Gestão Operadora",
+        "description": "Testes dos 7 endpoints obrigatórios da FASE 1:\n\n✅ GET /gestao/clientes\n✅ GET /gestao/planos  \n✅ POST /gestao/assinaturas\n✅ PATCH /gestao/planos/:idPlano\n✅ GET /gestao/assinaturas/:tipo\n✅ GET /gestao/assinaturascliente/:codcli\n✅ GET /gestao/assinaturasplano/:codplano\n\n🚀 Pronto para usar! Não precisa configurar variáveis.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "1. Listar Clientes",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:3000/gestao/clientes",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "3000",
+                    "path": ["gestao", "clientes"]
+                },
+                "description": "Lista todos os clientes cadastrados no sistema."
+            },
+            "response": []
+        },
+        {
+            "name": "2. Listar Planos",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:3000/gestao/planos",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "3000",
+                    "path": ["gestao", "planos"]
+                },
+                "description": "Lista todos os planos cadastrados no sistema."
+            },
+            "response": []
+        },
+        {
+            "name": "3. Criar Assinatura",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"codCli\": 1,\n    \"codPlano\": 2,\n    \"custoFinal\": 79.90,\n    \"descricao\": \"Assinatura teste\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "http://localhost:3000/gestao/assinaturas",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "3000",
+                    "path": ["gestao", "assinaturas"]
+                },
+                "description": "Cria uma nova assinatura com código do cliente, código do plano, custo final e descrição."
+            },
+            "response": []
+        },
+        {
+            "name": "4. Atualizar Custo Plano",
+            "request": {
+                "method": "PATCH",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"custoMensal\": 59.90\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "http://localhost:3000/gestao/planos/1",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "3000",
+                    "path": ["gestao", "planos", "1"]
+                },
+                "description": "Atualiza o custo mensal de um plano específico."
+            },
+            "response": []
+        },
+        {
+            "name": "5. Assinaturas - TODOS",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:3000/gestao/assinaturas/TODOS",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "3000",
+                    "path": ["gestao", "assinaturas", "TODOS"]
+                },
+                "description": "Lista todas as assinaturas (ativas e canceladas)."
+            },
+            "response": []
+        },
+        {
+            "name": "6. Assinaturas - ATIVOS",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:3000/gestao/assinaturas/ATIVOS",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "3000",
+                    "path": ["gestao", "assinaturas", "ATIVOS"]
+                },
+                "description": "Lista apenas assinaturas ativas."
+            },
+            "response": []
+        },
+        {
+            "name": "7. Assinaturas - CANCELADOS",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:3000/gestao/assinaturas/CANCELADOS",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "3000",
+                    "path": ["gestao", "assinaturas", "CANCELADOS"]
+                },
+                "description": "Lista apenas assinaturas canceladas."
+            },
+            "response": []
+        },
+        {
+            "name": "8. Assinaturas por Cliente",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:3000/gestao/assinaturascliente/1",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "3000",
+                    "path": ["gestao", "assinaturascliente", "1"]
+                },
+                "description": "Lista assinaturas de um cliente específico."
+            },
+            "response": []
+        },
+        {
+            "name": "9. Assinaturas por Plano",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:3000/gestao/assinaturasplano/1",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "3000",
+                    "path": ["gestao", "assinaturasplano", "1"]
+                },
+                "description": "Lista assinaturas de um plano específico."
+            },
+            "response": []
+        }
+    ]
+}
