@@ -10,42 +10,39 @@ datasource db {
 }
 
 model Plano {
-  codigo       Int     @id @default(autoincrement())
-  nome         String
-  custoMensal  Float
-  data         DateTime @default(now())
-  descricao    String
-  assinaturas  Assinatura[]
+  codigo      Int          @id @default(autoincrement())
+  nome        String
+  custoMensal Decimal 
+  data        DateTime     @default(now())
+  descricao   String
+  assinaturas Assinatura[]
 }
 
 model Cliente {
-  codigo      Int     @id @default(autoincrement())
+  codigo      Int          @id @default(autoincrement())
   nome        String
-  email       String  @unique
+  email       String       @unique
   assinaturas Assinatura[]
 }
 
 model Assinatura {
-  codigo            Int      @id @default(autoincrement())
-  codPlano          Int
-  codCli            Int
-  inicioFidelidade  DateTime @default(now())
-  fimFidelidade     DateTime
+  codigo              Int        @id @default(autoincrement())
+  codPlano            Int
+  codCli              Int
+  inicioFidelidade    DateTime   @default(now())
+  fimFidelidade       DateTime
   dataUltimoPagamento DateTime?
-  custoFinal        Float
-  descricao         String
-  plano             Plano    @relation(fields: [codPlano], references: [codigo])
-  cliente           Cliente  @relation(fields: [codCli], references: [codigo])
-  pagamentos        Pagamento[]
+  custoFinal          Decimal
+  descricao           String
+  plano               Plano      @relation(fields: [codPlano], references: [codigo])
+  cliente             Cliente    @relation(fields: [codCli], references: [codigo])
+  pagamentos          Pagamento[]
 }
 
-// O modelo Pagamento pertence ao ServicoFaturamento,
-// mas o definimos aqui para integridade relacional,
-// embora ele não será gerenciado diretamente por este serviço.
 model Pagamento {
-  codigo       Int      @id @default(autoincrement())
-  codAss       Int
-  valorPago    Float
+  codigo        Int        @id @default(autoincrement())
+  codAss        Int
+  valorPago     Decimal
   dataPagamento DateTime
-  assinatura   Assinatura @relation(fields: [codAss], references: [codigo])
+  assinatura    Assinatura @relation(fields: [codAss], references: [codigo])
 }
