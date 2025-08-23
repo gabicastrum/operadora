@@ -227,14 +227,12 @@ export class Assinatura {
 
 Para facilitar os testes e validação dos endpoints, foram criados dois arquivos dedicados:
 
-#### **📦 Collection do Postman**
+
+### **📦 Collection do Postman**
+
 - **Arquivo:** `TESTES-API.postman_collection.json`
 - **Conteúdo:** Collection completa com todos os 7 endpoints da FASE 1
-- **Recursos:** 
-  - ✅ URLs diretas com `localhost:3000`
-  - ✅ Testes automáticos de validação
-  - ✅ Exemplos de requisições pré-configurados
-  - ✅ Documentação detalhada de cada endpoint
+- **Como testar?:** Vá em "import" e insira o arquivo. 
 
 ### **Verificação Rápida**
 
@@ -244,8 +242,6 @@ curl http://localhost:3000/gestao/clientes
 
 # Deve retornar array JSON com clientes
 ```
-
-**👀 Para instruções detalhadas, consulte:** [`GUIA-TESTES.md`](./GUIA-TESTES.md)
 
 ## 🚀 Instalação e Execução
 
@@ -285,8 +281,6 @@ docker-compose up --build
 > - ✅ Migrações aplicadas automaticamente
 > - ✅ Banco populado com dados de teste
 > - ✅ Aplicação iniciada
-> 
-> **Não precisa mais executar comandos manuais!**
 
 #### **4. Testar a API**
 
