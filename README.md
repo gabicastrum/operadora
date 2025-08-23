@@ -96,3 +96,75 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+### Passo a Passo
+
+**1. Clone o Repositório**
+```bash
+git clone [URL_DO_SEU_REPOSITORIO]
+cd nome-do-projeto
+```
+
+**2. Configure as Variáveis de Ambiente**
+Este projeto utiliza um arquivo `.env` para gerenciar as variáveis de ambiente. Para configurar o seu, copie o arquivo de exemplo:
+
+```bash
+cp .env.example .env
+```
+> O arquivo `.env` já vem com os valores padrão para o ambiente Docker local. Não é necessário alterá-lo para executar o projeto. **Lembre-se de nunca comitar o arquivo `.env` no Git!**
+
+**3. Instale as Dependências**
+Execute o comando abaixo para instalar todas as dependências do projeto definidas no `package.json`:
+
+```bash
+npm install
+```
+
+**4. Inicie o Banco de Dados com Docker**
+Este comando irá iniciar um container com o banco de dados PostgreSQL em segundo plano:
+
+```bash
+docker-compose up -d
+```
+> Para parar o container, use `docker-compose down`.
+
+**5. Execute as Migrations do Banco**
+Com o banco de dados rodando, execute o comando abaixo para que o Prisma crie as tabelas conforme o `schema.prisma`:
+
+```bash
+npx prisma migrate dev
+```
+
+**6. Popule o Banco com Dados Iniciais (Seeding)**
+Para ter dados de teste, execute o script de seeding:
+
+```bash
+npx prisma db seed
+```
+> Este script irá criar 10 clientes, 5 planos e 5 assinaturas, conforme solicitado no escopo do projeto.
+
+**7. Inicie a Aplicação**
+Agora, inicie o servidor NestJS em modo de desenvolvimento:
+
+```bash
+npm run start:dev
+```
+Você verá uma mensagem no terminal indicando que o servidor está rodando, geralmente em `http://localhost:3000`.
+
+## 🧪 Testando a API
+
+Com a aplicação rodando, você pode usar uma ferramenta como [Postman](https://www.postman.com/) ou [Insomnia](https://insomnia.rest/) para testar os endpoints.
+
+A coleção do Postman para este projeto deve ser entregue conforme os requisitos da disciplina.
+
+### Endpoints Disponíveis (Fase 1)
+
+| Método | Rota                                  | Descrição                           |
+| :----- | :------------------------------------ | :------------------------------------ |
+| `GET`  | `/gestao/clientes`                    | Lista todos os clientes cadastrados.  |
+| `GET`  | `/gestao/planos`                      | Lista todos os planos cadastrados.    |
+| `POST` | `/gestao/assinaturas`                 | Cria uma nova assinatura.             |
+| `GET`  | `/gestao/assinaturas/{tipo}`          | Lista assinaturas por tipo.           |
+| `GET`  | `/gestao/assinaturascliente/{codcli}` | Lista as assinaturas de um cliente.   |
+| `GET`  | `/gestao/assinaturasplano/{codplano}` | Lista os assinantes de um plano.      |
+| `PATCH`| `/gestao/planos/{idPlano}`            | Atualiza o custo mensal de um plano.  |

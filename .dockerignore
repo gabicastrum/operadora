@@ -1,0 +1,6 @@
+# Ignorar arquivos e pastas desnecessários
+node_modules
+dist
+.env
+Dockerfile
+docker-compose.yml
