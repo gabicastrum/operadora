@@ -85,14 +85,14 @@ TabelaAssinatura --> TabelaPlano : FK codPlano
 
 ' Anotações dos endpoints
 note top of Controller
-  Endpoints FASE 1:
-  GET /gestao/clientes
-  GET /gestao/planos
-  POST /gestao/assinaturas
-  PATCH /gestao/planos/:idPlano
-  GET /gestao/assinaturas/:tipo
-  GET /gestao/assinaturascliente/:codcli
-  GET /gestao/assinaturasplano/:codplano
+  Endpoints FASE 1 (REST por Domínio):
+  GET /clientes
+  GET /planos
+  POST /assinaturas
+  PATCH /planos/:id
+  GET /assinaturas/:tipo
+  GET /assinaturas/cliente/:codcli
+  GET /assinaturas/plano/:codplano
 end note
 
 note bottom of BancoDados
@@ -213,13 +213,13 @@ export class Assinatura {
 
 | Método | Endpoint | Descrição | Parâmetros | Resposta |
 |--------|----------|-----------|------------|----------|
-| `GET` | `/gestao/clientes` | Lista todos os clientes | Nenhum | Array com todos os atributos da entidade |
-| `GET` | `/gestao/planos` | Lista todos os planos | Nenhum | Array com todos os atributos da entidade |
-| `POST` | `/gestao/assinaturas` | Cria uma assinatura | `{codCli, codPlano, custoFinal, descricao}` | Objeto com todos os atributos da assinatura |
-| `PATCH` | `/gestao/planos/:idPlano` | Atualiza custo mensal do plano | `{custoMensal}` | Objeto com todos os atributos do plano |
-| `GET` | `/gestao/assinaturas/:tipo` | Lista assinaturas por tipo | `tipo: TODOS\|ATIVOS\|CANCELADOS` | Array de objetos com status |
-| `GET` | `/gestao/assinaturascliente/:codcli` | Lista assinaturas do cliente | `codcli: número` | Array de objetos com status |
-| `GET` | `/gestao/assinaturasplano/:codplano` | Lista assinaturas do plano | `codplano: número` | Array de objetos com status |
+| `GET` | `/clientes` | Lista todos os clientes | Nenhum | Array com todos os atributos da entidade |
+| `GET` | `/planos` | Lista todos os planos | Nenhum | Array com todos os atributos da entidade |
+| `POST` | `/assinaturas` | Cria uma assinatura | `{codCli, codPlano, custoFinal, descricao}` | Objeto com todos os atributos da assinatura |
+| `PATCH` | `/planos/:id` | Atualiza custo mensal do plano | `{custoMensal}` | Objeto com todos os atributos do plano |
+| `GET` | `/assinaturas/:tipo` | Lista assinaturas por tipo | `tipo: TODOS\|ATIVOS\|CANCELADOS` | Array de objetos com status |
+| `GET` | `/assinaturas/cliente/:codcli` | Lista assinaturas do cliente | `codcli: número` | Array de objetos com status |
+| `GET` | `/assinaturas/plano/:codplano` | Lista assinaturas do plano | `codplano: número` | Array de objetos com status |
 
 ## 🧪 Testes da API
 
@@ -238,7 +238,7 @@ Para facilitar os testes e validação dos endpoints, foram criados dois arquivo
 
 ```bash
 # Teste básico para verificar se a API está funcionando
-curl http://localhost:3000/gestao/clientes
+curl http://localhost:3000/clientes
 
 # Deve retornar array JSON com clientes
 ```
@@ -285,7 +285,7 @@ docker-compose up --build
 #### **4. Testar a API**
 
 ```bash
-curl http://localhost:3000/gestao/clientes
+curl http://localhost:3000/clientes
 ```
 
 ### **Comandos Úteis**
