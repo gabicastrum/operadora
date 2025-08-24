@@ -1,3 +1,5 @@
+import { PERIOD_MS } from '../../shared/constants';
+
 export class Assinatura {
   constructor(
     public readonly codigo: number,
@@ -14,7 +16,7 @@ export class Assinatura {
     const hoje = new Date();
     return (
       this.dataUltimoPagamento >=
-      new Date(hoje.getTime() - 30 * 24 * 60 * 60 * 1000)
+      new Date(hoje.getTime() - PERIOD_MS.THIRTY_DAYS)
     );
   }
 }

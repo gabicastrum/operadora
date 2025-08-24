@@ -1,5 +1,6 @@
 import { Assinatura } from '../../domain/entities/assinatura.entity';
 import { AssinaturaListDto } from '../../domain/repositories/assinatura.repository';
+import { PERIOD_MS } from '../../shared/constants';
 
 export class AssinaturaConverter {
   static toDomain(assinatura: any): Assinatura {
@@ -17,7 +18,7 @@ export class AssinaturaConverter {
 
   static toListDto(assinatura: any): AssinaturaListDto {
     const hoje = new Date();
-    const trintaDiasAtras = new Date(hoje.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const trintaDiasAtras = new Date(hoje.getTime() - PERIOD_MS.THIRTY_DAYS);
     const isAtiva = assinatura.dataUltimoPagamento >= trintaDiasAtras;
 
     return {
@@ -32,7 +33,7 @@ export class AssinaturaConverter {
 
   static isAssinaturaAtiva(dataUltimoPagamento: Date): boolean {
     const hoje = new Date();
-    const trintaDiasAtras = new Date(hoje.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const trintaDiasAtras = new Date(hoje.getTime() - PERIOD_MS.THIRTY_DAYS);
     return dataUltimoPagamento >= trintaDiasAtras;
   }
 }

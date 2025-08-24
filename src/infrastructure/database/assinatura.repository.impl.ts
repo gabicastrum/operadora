@@ -7,6 +7,7 @@ import {
   AssinaturaListDto,
 } from '../../domain/repositories/assinatura.repository';
 import { AssinaturaConverter } from './assinatura.converter';
+import { PERIOD_MS, PERIOD_YEARS } from '../../shared/constants';
 
 @Injectable()
 export class AssinaturaRepositoryImpl implements AssinaturaRepository {
@@ -15,7 +16,7 @@ export class AssinaturaRepositoryImpl implements AssinaturaRepository {
   async criar(dados: CriarAssinaturaDto): Promise<Assinatura> {
     const hoje = new Date();
     const fimFidelidade = new Date(hoje);
-    fimFidelidade.setFullYear(hoje.getFullYear() + 1);
+    fimFidelidade.setFullYear(hoje.getFullYear() + PERIOD_YEARS.FIDELITY_PERIOD);
 
     const assinatura = await this.prisma.assinatura.create({
       data: {
@@ -36,7 +37,7 @@ export class AssinaturaRepositoryImpl implements AssinaturaRepository {
     tipo: 'TODOS' | 'ATIVOS' | 'CANCELADOS',
   ): Promise<AssinaturaListDto[]> {
     const hoje = new Date();
-    const trintaDiasAtras = new Date(hoje.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const trintaDiasAtras = new Date(hoje.getTime() - PERIOD_MS.THIRTY_DAYS);
 
     const assinaturaTipoWhere = {
       ATIVOS: {
