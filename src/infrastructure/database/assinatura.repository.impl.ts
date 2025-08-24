@@ -6,9 +6,10 @@ import {
   CriarAssinaturaDto,
   AssinaturaListDto,
 } from '../../domain/repositories/assinatura.repository';
+import { AssinaturaConverter } from './assinatura.converter';
 
 @Injectable()
-export class PrismaAssinaturaRepository implements AssinaturaRepository {
+export class AssinaturaRepositoryImpl implements AssinaturaRepository {
   constructor(private prisma: PrismaService) {}
 
   async criar(dados: CriarAssinaturaDto): Promise<Assinatura> {
@@ -28,7 +29,7 @@ export class PrismaAssinaturaRepository implements AssinaturaRepository {
       },
     });
 
-    return this.toDomain(assinatura);
+    return AssinaturaConverter.toDomain(assinatura);
   }
 
   async listarPorTipo(
@@ -37,26 +38,29 @@ export class PrismaAssinaturaRepository implements AssinaturaRepository {
     const hoje = new Date();
     const trintaDiasAtras = new Date(hoje.getTime() - 30 * 24 * 60 * 60 * 1000);
 
-    let where = {};
-    if (tipo === 'ATIVOS') {
-      where = {
+    const assinaturaTipoWhere = {
+      ATIVOS: {
         dataUltimoPagamento: {
           gte: trintaDiasAtras,
         },
-      };
-    } else if (tipo === 'CANCELADOS') {
-      where = {
+      },
+      CANCELADOS: {
         dataUltimoPagamento: {
           lt: trintaDiasAtras,
         },
-      };
-    }
+      },
+      TODOS: {},
+    };
+
+    const where = assinaturaTipoWhere[tipo] || {};
 
     const assinaturas = await this.prisma.assinatura.findMany({
       where,
     });
 
-    return assinaturas.map(this.toListDto);
+    return assinaturas.map((assinatura) =>
+      AssinaturaConverter.toListDto(assinatura),
+    );
   }
 
   async listarPorCliente(codCli: number): Promise<AssinaturaListDto[]> {
@@ -64,7 +68,9 @@ export class PrismaAssinaturaRepository implements AssinaturaRepository {
       where: { codCli },
     });
 
-    return assinaturas.map(this.toListDto);
+    return assinaturas.map((assinatura) =>
+      AssinaturaConverter.toListDto(assinatura),
+    );
   }
 
   async listarPorPlano(codPlano: number): Promise<AssinaturaListDto[]> {
@@ -72,34 +78,8 @@ export class PrismaAssinaturaRepository implements AssinaturaRepository {
       where: { codPlano },
     });
 
-    return assinaturas.map(this.toListDto);
-  }
-
-  private toDomain(assinatura: any): Assinatura {
-    return new Assinatura(
-      assinatura.codigo,
-      assinatura.codPlano,
-      assinatura.codCli,
-      assinatura.inicioFidelidade,
-      assinatura.fimFidelidade,
-      assinatura.dataUltimoPagamento,
-      assinatura.custoFinal,
-      assinatura.descricao,
+    return assinaturas.map((assinatura) =>
+      AssinaturaConverter.toListDto(assinatura),
     );
-  }
-
-  private toListDto(assinatura: any): AssinaturaListDto {
-    const hoje = new Date();
-    const trintaDiasAtras = new Date(hoje.getTime() - 30 * 24 * 60 * 60 * 1000);
-    const isAtiva = assinatura.dataUltimoPagamento >= trintaDiasAtras;
-
-    return {
-      codigo: assinatura.codigo,
-      codCli: assinatura.codCli,
-      codPlano: assinatura.codPlano,
-      dataInicio: assinatura.inicioFidelidade,
-      dataFim: assinatura.fimFidelidade,
-      status: isAtiva ? 'ATIVO' : 'CANCELADO',
-    };
   }
 }

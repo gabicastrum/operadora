@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AssinaturaController } from './infrastructure/http/assinatura.controller';
 import { AssinaturaService } from './application/use-cases/assinatura.service';
 import { AssinaturaRepository } from './domain/repositories/assinatura.repository';
-import { PrismaAssinaturaRepository } from './infrastructure/database/prisma-assinatura.repository';
+import { AssinaturaRepositoryImpl } from './infrastructure/database/assinatura.repository.impl';
 import { PrismaService } from './prisma.service';
 
 @Module({
@@ -11,7 +11,7 @@ import { PrismaService } from './prisma.service';
     AssinaturaService,
     {
       provide: AssinaturaRepository,
-      useClass: PrismaAssinaturaRepository,
+      useClass: AssinaturaRepositoryImpl,
     },
     PrismaService,
   ],

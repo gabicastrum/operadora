@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { PlanoController } from './infrastructure/http/plano.controller';
 import { PlanoService } from './application/use-cases/plano.service';
 import { PlanoRepository } from './domain/repositories/plano.repository';
-import { PrismaPlanoRepository } from './infrastructure/database/prisma-plano.repository';
+import { PlanoRepositoryImpl } from './infrastructure/database/plano.repository.impl';
 import { PrismaService } from './prisma.service';
 
 @Module({
@@ -11,7 +11,7 @@ import { PrismaService } from './prisma.service';
     PlanoService,
     {
       provide: PlanoRepository,
-      useClass: PrismaPlanoRepository,
+      useClass: PlanoRepositoryImpl,
     },
     PrismaService,
   ],

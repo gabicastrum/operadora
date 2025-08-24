@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ClienteController } from './infrastructure/http/cliente.controller';
 import { ClienteService } from './application/use-cases/cliente.service';
 import { ClienteRepository } from './domain/repositories/cliente.repository';
-import { PrismaClienteRepository } from './infrastructure/database/prisma-cliente.repository';
+import { ClienteRepositoryImpl } from './infrastructure/database/cliente.repository.impl';
 import { PrismaService } from './prisma.service';
 
 @Module({
@@ -11,7 +11,7 @@ import { PrismaService } from './prisma.service';
     ClienteService,
     {
       provide: ClienteRepository,
-      useClass: PrismaClienteRepository,
+      useClass: ClienteRepositoryImpl,
     },
     PrismaService,
   ],
