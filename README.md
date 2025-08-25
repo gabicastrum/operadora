@@ -11,13 +11,21 @@ Este projeto foi desenvolvido seguindo os princípios da **Clean Architecture** 
 
 ```
 ┌─────────────────────────────────────────┐
-│           HTTP Layer (Controllers)      │  ← Camada de Apresentação
+│     HTTP Layer (Controllers)            │  ← Camada de Apresentação
+│  ClienteController | PlanoController    │    (Controllers específicos)
+│  AssinaturaController | GestaoController│    
 ├─────────────────────────────────────────┤
-│        Application Layer (Services)     │  ← Camada de Aplicação
+│    Application Layer (Use Cases)        │  ← Camada de Aplicação
+│  ClienteService | PlanoService          │    (Services por domínio)
+│  AssinaturaService                      │
 ├─────────────────────────────────────────┤
-│         Domain Layer (Entities)         │  ← Camada de Domínio
+│       Domain Layer (Entities)           │  ← Camada de Domínio
+│  Cliente | Plano | Assinatura           │    (Entidades + Repositories)
+│  + Repository Interfaces                │
 ├─────────────────────────────────────────┤
-│      Infrastructure Layer (Database)    │  ← Camada de Infraestrutura
+│    Infrastructure Layer (Database)      │  ← Camada de Infraestrutura
+│  Repository Implementations             │    (Prisma + Converters)
+│  + Data Converters                      │
 └─────────────────────────────────────────┘
 ```
 
@@ -119,14 +127,14 @@ Cada classe possui uma única responsabilidade:
 - **Entities**: Representam apenas as regras de negócio do domínio
 
 ```typescript
-// Exemplo: GestaoController tem apenas a responsabilidade de lidar com HTTP
-@Controller('gestao')
-export class GestaoController {
-  constructor(private readonly gestaoService: GestaoService) {}
+// Exemplo: ClienteController tem apenas a responsabilidade de lidar com HTTP
+@Controller('clientes')
+export class ClienteController {
+  constructor(private readonly clienteService: ClienteService) {}
   
-  @Get('clientes')
-  listarClientes() {
-    return this.gestaoService.listarClientes(); // Delega para o service
+  @Get()
+  listarTodos() {
+    return this.clienteService.listarTodos(); // Delega para o service
   }
 }
 ```
@@ -167,11 +175,9 @@ Dependência de abstrações, não de implementações:
 
 ```typescript
 @Injectable()
-export class GestaoService {
+export class ClienteService {
   constructor(
     private clienteRepository: ClienteRepository, // Abstração, não implementação
-    private planoRepository: PlanoRepository,
-    private assinaturaRepository: AssinaturaRepository,
   ) {}
 }
 ```
@@ -183,9 +189,9 @@ Abstrai a lógica de acesso a dados, permitindo trocar implementações sem afet
 
 ```
 Domain Layer (Abstract)     →     Infrastructure Layer (Concrete)
-ClienteRepository          →     PrismaClienteRepository
-PlanoRepository            →     PrismaPlanoRepository
-AssinaturaRepository       →     PrismaAssinaturaRepository
+ClienteRepository          →     ClienteRepositoryImpl
+PlanoRepository            →     PlanoRepositoryImpl  
+AssinaturaRepository       →     AssinaturaRepositoryImpl
 ```
 
 ### **Dependency Injection**
@@ -218,8 +224,8 @@ export class Assinatura {
 | `POST` | `/assinaturas` | Cria uma assinatura | `{codCli, codPlano, custoFinal, descricao}` | Objeto com todos os atributos da assinatura |
 | `PATCH` | `/planos/:id` | Atualiza custo mensal do plano | `{custoMensal}` | Objeto com todos os atributos do plano |
 | `GET` | `/assinaturas/:tipo` | Lista assinaturas por tipo | `tipo: TODOS\|ATIVOS\|CANCELADOS` | Array de objetos com status |
-| `GET` | `/assinaturas/cliente/:codcli` | Lista assinaturas do cliente | `codcli: número` | Array de objetos com status |
-| `GET` | `/assinaturas/plano/:codplano` | Lista assinaturas do plano | `codplano: número` | Array de objetos com status |
+| `GET` | `/clientes/:codcli/assinaturas` | Lista assinaturas do cliente | `codcli: número` | Array de objetos com status |
+| `GET` | `/planos/:codplano/assinaturas` | Lista assinaturas do plano | `codplano: número` | Array de objetos com status |
 
 ## 🧪 Testes da API
 
@@ -308,12 +314,17 @@ docker-compose up --build
 src/
 ├── main.ts                           # Entry point da aplicação
 ├── app.module.ts                     # Módulo principal
-├── gestao.module.ts                  # Módulo de gestão
+├── cliente.module.ts                 # Módulo de clientes
+├── plano.module.ts                   # Módulo de planos
+├── assinatura.module.ts              # Módulo de assinaturas
+├── gestao.module.ts                  # Módulo de gestão (endpoints compostos)
 ├── prisma.service.ts                 # Serviço do Prisma
 │
 ├── application/                      # Camada de Aplicação
-│   └── use-cases/
-│       └── gestao.service.ts         # Lógica de negócio
+│   └── use-cases/                    # Casos de uso específicos
+│       ├── cliente.service.ts        # Lógica de negócio - Clientes
+│       ├── plano.service.ts          # Lógica de negócio - Planos
+│       └── assinatura.service.ts     # Lógica de negócio - Assinaturas
 │
 ├── domain/                           # Camada de Domínio
 │   ├── entities/                     # Entidades de negócio
@@ -325,13 +336,24 @@ src/
 │       ├── plano.repository.ts
 │       └── assinatura.repository.ts
 │
-└── infrastructure/                   # Camada de Infraestrutura
-    ├── http/                         # Controllers
-    │   └── gestao.controller.ts
-    └── database/                     # Implementações dos repositórios
-        ├── prisma-cliente.repository.ts
-        ├── prisma-plano.repository.ts
-        └── prisma-assinatura.repository.ts
+├── infrastructure/                   # Camada de Infraestrutura
+│   ├── http/                         # Controllers (REST API)
+│   │   ├── cliente.controller.ts     # Endpoints de clientes
+│   │   ├── plano.controller.ts       # Endpoints de planos
+│   │   ├── assinatura.controller.ts  # Endpoints de assinaturas
+│   │   └── gestao.controller.ts      # Endpoints compostos
+│   └── database/                     # Implementações dos repositórios
+│       ├── cliente.repository.impl.ts
+│       ├── cliente.converter.ts      # Conversão Entity ↔ Prisma
+│       ├── plano.repository.impl.ts
+│       ├── plano.converter.ts
+│       ├── assinatura.repository.impl.ts
+│       └── assinatura.converter.ts
+│
+└── shared/                           # Recursos compartilhados
+    └── constants/                    # Constantes do sistema
+        ├── index.ts
+        └── time.constants.ts
 
 prisma/
 ├── schema.prisma                     # Schema do banco de dados
@@ -365,8 +387,40 @@ O desenvolvimento desta fase foi focado na criação de uma base sólida para o 
 
 1. **Arquitetura Limpa**: Separação clara de responsabilidades entre camadas
 2. **Princípios SOLID**: Aplicação rigorosa dos cinco princípios
-3. **Testabilidade**: Código desacoplado e facilmente testável
-4. **Manutenibilidade**: Estrutura organizada e extensível
+3. **Separação por Domínio**: Services e Controllers específicos para cada entidade
+4. **Testabilidade**: Código desacoplado e facilmente testável
+5. **Manutenibilidade**: Estrutura organizada e extensível
+
+### **Arquitetura Implementada**
+
+A aplicação seguiu uma abordagem híbrida, combinando:
+
+- **Controllers por Domínio**: `ClienteController`, `PlanoController`, `AssinaturaController`
+- **Controller Composto**: `GestaoController` para endpoints que cruzam domínios
+- **Services Especializados**: Cada entidade possui seu próprio service
+- **Repositories com Converters**: Separação entre entidades de domínio e modelos de dados
+
+### **Padrão de Converters**
+
+Foi implementado um padrão de conversão entre as entidades de domínio e os modelos do Prisma:
+
+```typescript
+// Exemplo do ClienteConverter
+export class ClienteConverter {
+  static toEntity(prismaCliente: PrismaCliente): Cliente {
+    // Converte modelo Prisma para entidade de domínio
+  }
+  
+  static toPrisma(cliente: Cliente): PrismaCliente {
+    // Converte entidade de domínio para modelo Prisma
+  }
+}
+```
+
+Este padrão garante que:
+- A camada de domínio permaneça independente do ORM
+- As regras de conversão fiquem centralizadas
+- Seja fácil trocar o ORM no futuro
 
 ### **Desafios Encontrados e Soluções**
 
@@ -396,7 +450,19 @@ O desenvolvimento desta fase foi focado na criação de uma base sólida para o 
 
 **Referência**: [NestJS with Docker](https://docs.nestjs.com/recipes/prisma#docker)
 
-#### **5. Seed de Dados para Testes**
+#### **5. Modularização por Domínio**
+**Desafio**: Organizar o código de forma que cada domínio tenha suas responsabilidades bem definidas.
+
+**Solução**: Criação de módulos, services e controllers específicos para cada entidade (Cliente, Plano, Assinatura), com um módulo de gestão para operações que cruzam domínios.
+
+**Referência**: [NestJS Modules](https://docs.nestjs.com/modules)
+
+#### **6. Padrão Converter**
+**Desafio**: Manter a independência entre as entidades de domínio e os modelos do banco de dados.
+
+**Solução**: Implementação de classes converter que fazem a tradução entre entidades de domínio e modelos Prisma, mantendo as camadas desacopladas.
+
+#### **7. Seed de Dados para Testes**
 **Desafio**: Criar dados de teste realistas para validação dos endpoints.
 
 **Solução**: Script de seed automatizado com dados variados (assinaturas ativas e canceladas).

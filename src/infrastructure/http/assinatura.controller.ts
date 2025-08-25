@@ -21,18 +21,4 @@ export class AssinaturaController {
   ): Promise<AssinaturaListDto[]> {
     return this.assinaturaService.listarPorTipo(tipo);
   }
-
-  @Get('cliente/:codcli')
-  async listarPorCliente(
-    @Param('codcli') codcli: string,
-  ): Promise<AssinaturaListDto[]> {
-    return this.assinaturaService.listarPorCliente(Number(codcli));
-  }
-
-  @Get('plano/:codplano')
-  async listarPorPlano(
-    @Param('codplano') codplano: string,
-  ): Promise<AssinaturaListDto[]> {
-    return this.assinaturaService.listarPorPlano(Number(codplano));
-  }
 }
