@@ -2,10 +2,13 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaService } from './prisma.service';
-import { GestaoModule } from './gestao/gestao.module';
+import { ClienteModule } from './cliente.module';
+import { PlanoModule } from './plano.module';
+import { AssinaturaModule } from './assinatura.module';
+import { GestaoModule } from './gestao.module';
 
 @Module({
-  imports: [GestaoModule],
+  imports: [ClienteModule, PlanoModule, AssinaturaModule, GestaoModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })
