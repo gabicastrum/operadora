@@ -436,7 +436,7 @@ Este padrão garante que:
 
 **Solução**: Criação de interfaces abstratas na camada de domínio com implementações concretas na infraestrutura.
 
-**Referência**: [Repository Pattern - Martin Fowler](https://martinfowler.com/eaaCatalog/repository.html)
+**Referência**: [Repository Pattern](https://medium.com/@pererikbergman/repository-design-pattern-e28c0f3e4a30)
 
 #### **3. Gerenciamento de Status das Assinaturas**
 **Desafio**: Determinar se uma assinatura está ativa ou cancelada baseada em regras de negócio.
