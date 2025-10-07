@@ -481,5 +481,5 @@ Este padrão garante que:
 ---
 
 > **Desenvolvido por**: Gabriela de Castro Laurindo  
-> **Instituição**: PUCRS - Desenvolvimento de Sistemas Backend  
-> **Data**: Agosto de 2025
+> **Data de Entrega Final do Projeto**: Agosto de 2025
+> O projeto segue em constante aprimoramento, com foco na implementação de melhorias e na solidificação dos conhecimentos.
